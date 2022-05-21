@@ -1,9 +1,8 @@
 import styles from './Gifs.module.css';
-import { GifsProps } from './Gifs.types';
-import { useKey } from '../../hooks/useKey';
+import { useGifContext } from '../../hooks/useGifContext';
 
-function Gifs({ allGifs, fetchGifs }: GifsProps) {
-	useKey('Enter', fetchGifs);
+function Gifs() {
+	const { allGifs } = useGifContext();
 
 	return (
 		<div className={styles.videoContainer}>

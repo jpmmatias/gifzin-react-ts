@@ -1,8 +1,10 @@
 import styles from './Header.module.css';
-import { HeaderProps } from './Header.types';
 import closeBtnSvg from '../../images/close-icon.svg';
+import { useGifContext } from '../../hooks/useGifContext';
 
-function Header({ gifShowing, reset }: HeaderProps) {
+function Header() {
+	const { gifShowing, reset } = useGifContext();
+
 	if (gifShowing) {
 		return (
 			<button className={styles.button} onClick={reset}>

@@ -1,8 +1,10 @@
 import { validTextSearch } from '../../utils/validTextSearch';
 import styles from './Hint.module.css';
-import { HintProps } from './Hint.types';
+import { useGifContext } from '../../hooks/useGifContext';
 
-function Hint({ gifShowing, textSearch }: HintProps) {
+function Hint() {
+	const { gifShowing, textSearch } = useGifContext();
+
 	if (gifShowing) {
 		return (
 			<p className={styles.p}>
