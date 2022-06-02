@@ -1,29 +1,7 @@
-import {
-	createContext,
-	useState,
-	useCallback,
-	ReactNode,
-	Dispatch,
-	SetStateAction,
-} from 'react';
-import { IGif } from '../@types';
-import { useContext } from 'react';
+import { createContext, useState, useCallback, useContext } from 'react';
+import { IGif, IGifContext, GifProviderProps } from '../@types';
 import { validTextSearch } from '../utils/validTextSearch';
-
-interface IGifContext {
-	textSearch: string;
-	reset: () => void;
-	setAllGifs: Dispatch<SetStateAction<IGif[]>>;
-	setGifShowing: Dispatch<SetStateAction<boolean>>;
-	setTextSearch: Dispatch<SetStateAction<string>>;
-	gifShowing: boolean;
-	allGifs: IGif[];
-	fetchGifs: () => Promise<void>;
-}
-
-interface GifProviderProps {
-	children: ReactNode;
-}
+import { fetchGif } from '../services/fetchGif';
 
 const GifContext = createContext<IGifContext>({} as IGifContext);
 
@@ -40,22 +18,11 @@ export function GifContextProvider({ children }: GifProviderProps) {
 
 	const fetchGifs = useCallback(async () => {
 		if (!validTextSearch(textSearch)) return;
-		try {
-			const response = await fetch(
-				`https://api.giphy.com/v1/gifs/search?api_key=${process.env.REACT_APP_GIPHY_API_KEY}&q=${textSearch}&limit=50&offset=0&rating=PG-13&lang=pt`
-			);
 
-			const data = await response.json();
-			const gifs = data.data;
-			const randomNumber = Math.floor(Math.random() * gifs.length);
-			const selectedGif = gifs[randomNumber];
-			const currentGif: IGif = { src: selectedGif.images.original.mp4 };
+		const currentGif = await fetchGif(textSearch);
 
-			setAllGifs((oldGifs) => [...oldGifs, currentGif]);
-			setGifShowing(true);
-		} catch (error) {
-			console.log(error);
-		}
+		setAllGifs((oldGifs) => [...oldGifs, currentGif]);
+		setGifShowing(true);
 	}, [textSearch]);
 
 	return (
